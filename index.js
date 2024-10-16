@@ -4,7 +4,7 @@ const cors = require('cors');
 const gfgData = require('./Controllers/gfg');
 const codechefData = require('./Controllers/codechef');
 const leetcodeData = require('./Controllers/leetcodeData');
-const port = process.env.PORT || 8080;
+const port = 8080 
 const mongoose = require('mongoose');
 const User = require('./Models/data');
 const sendMail = require('./Controllers/forgetPassword');
@@ -42,11 +42,7 @@ app.listen(port, () => {
     console.log("app is starting");
 })
 
-const asyncWrap = (fun) => {
-    return (err ,req,res,next) => {
-        fun(err, req,res , next).catch((err)=>next(err));
-    }
-}
+
 
 app.post("/editprofile/editPlatformPage", async (req, res) => {
     const { leetcodeUname, codechefUname, gfgUname } = req.body;
@@ -67,13 +63,13 @@ app.post("/editprofile/editPlatformPage", async (req, res) => {
 res.json({ leetcode, codechef, gfg });
 
 })
-app.get("/api/signup" , asyncWrap(async(req,res)=>{
+app.get("/api/signup" ,(async(req,res)=>{
     const data = await User.find();
     console.log("in home get")
     res.send(data)
 }))
 
-app.post("/signup", asyncWrap(async (req, res) => {
+app.post("/signup",(async (req, res) => {
     const { uname, email, pass, last_char } = req.body;
     console.log(req.body);
     let final = pass;
@@ -99,13 +95,13 @@ app.post("/signup", asyncWrap(async (req, res) => {
 }))
 
 
-app.get("/api/login", asyncWrap(async (req, res) => {
+app.get("/api/login",(async (req, res) => {
 
     const data = await User.find();
     res.json(data);
 }))
 
-app.post("/login", asyncWrap(async (req, res) => {
+app.post("/login",(async (req, res) => {
     let { email } = req.body;
     let data = await User.findOne({
         $or:
@@ -121,7 +117,7 @@ app.post("/login", asyncWrap(async (req, res) => {
 }))
 
 
-app.get("/api/home", asyncWrap(async (req, res) => {
+app.get("/api/home",(async (req, res) => {
 
     if (userId) {
         const data = await User.findById(userId);
@@ -132,7 +128,7 @@ app.get("/api/home", asyncWrap(async (req, res) => {
 
 }))
 
-app.post("/data" , asyncWrap(async(req,res)=>{
+app.post("/data" ,(async(req,res)=>{
     console.log(req.body);
     let {UserName} = req.body;
     const data = await User.findOne({userName : UserName});
@@ -144,14 +140,14 @@ app.post("/logout" , (req,res)=>{
     userId = '';
 })
 
-app.post("/forgetpassword",asyncWrap(async(req,res)=>{
+app.post("/forgetpassword",(async(req,res)=>{
     let {emailId} = req.body;
     const data = await User.findOne({emailId : emailId});
     userId = data._id.toString();
     await sendMail(emailId);  
 }))
 
-app.get("/api/resetpassword",  asyncWrap(async(req,res)=>{
+app.get("/api/resetpassword", (async(req,res)=>{
     const data = await User.findOne({_id : userId});
     let obj = {
         userName : data.userName,
@@ -161,7 +157,7 @@ app.get("/api/resetpassword",  asyncWrap(async(req,res)=>{
     res.json(obj);
 }))
 
-app.patch("/changepassword" , asyncWrap(async(req,res)=>{
+app.patch("/changepassword" ,(async(req,res)=>{
     let {password} = req.body;
     console.log(password , req.body)
 
